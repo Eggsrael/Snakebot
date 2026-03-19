@@ -36,3 +36,14 @@ while True:
         print(f"Distance: {vl53.distance} cm")
         vl53.clear_interrupt()
         time.sleep(0.1)
+
+class tof:
+
+    def __init__(self, distance_mode=1, timing_budget=100, xshuts=[board.D5, board.D6, board.D13]):
+        i2c = board.I2C()
+        self.vl53 = adafruit_vl53l1x.VL53L1X(i2c)
+        self.vl53.distance_mode = distance_mode
+        self.vl53.timing_budget = timing_budget
+
+    def get_distance(self):
+        return self.vl53.distance
