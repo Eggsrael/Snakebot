@@ -77,42 +77,4 @@ class Motor:
         GPIO.cleanup()
 
 
-# Wrap main content in a try block so we can  catch the user pressing CTRL-C and run the
-# GPIO cleanup function. This will also prevent the user seeing lots of unnecessary error messages.
-try:
-# Create Infinite loop to read user input
-#
-    movement = ""
-    freq_right = 0
-    freq_left = 0
-    motor = Motor()
-    while(True):
-        # Get user Input
-        user_input = input()
-        try:
-            movement = user_input.split()[0]
-            freq_right = int(user_input.split()[1])
-            freq_left = int(user_input.split()[2])
-        except Exception as e:
-            continue
-
-      # To see users input
-      # print(user_input)
-
-        if movement == 'w':
-            motor.move_forward(freq_right, freq_left)
-        elif movement == 's':
-            motor.move_backward(freq_right, freq_left)
-        elif movement == 'd':
-            motor.move_right(freq_right, freq_left)
-        elif movement == 'a':
-            motor.move_left(freq_right, freq_left)
-        elif movement == 'c':
-            motor.stop()
-
-# If user press CTRL-C
-except KeyboardInterrupt:
-  # Reset GPIO settings
-  GPIO.cleanup()
-  print("GPIO Clean up")
 
