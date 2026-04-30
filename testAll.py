@@ -7,7 +7,7 @@ from motor_control import Motor
 # -----------------------------
 # User settings
 # -----------------------------
-OBSTACLE_THRESHOLD_MM = 200   # obstacle if <= 200 mm
+OBSTACLE_THRESHOLD_MM = 300   # obstacle if <= 200 mm
 DISTANCE_MODE = 1             # 1 = SHORT, 2 = LONG
 TIMING_BUDGET_MS = 100        # sensor timing budget
 LOOP_DELAY_S = 1
@@ -104,26 +104,26 @@ try:
                 motor.stop()
             elif right_mm is None:
                 decision = "TURN LEFT"
-                motor.move_left(100, 100)
+                motor.move_left(75, 75)
             elif left_mm is None:
                 decision = "TURN RIGHT"
-                motor.move_right(100, 100)
+                motor.move_right(75, 75)
             elif left_mm > right_mm:
                 decision = "TURN LEFT"
-                motor.move_left(100, 100)
+                motor.move_left(75, 75)
             else:
                 decision = "TURN RIGHT"
-                motor.move_right(100, 100)
+                motor.move_right(75, 75)
         elif left_mm is not None and left_mm <= OBSTACLE_THRESHOLD_MM:
             decision = "TURN RIGHT"
-            motor.move_right(100, 100)
+            motor.move_right(75, 75)
 
         elif right_mm is not None and right_mm <= OBSTACLE_THRESHOLD_MM:
             decision = "TURN LEFT"
-            motor.move_left(100, 100)
+            motor.move_left(75, 75)
         else:
             decision = "FORWARD"
-            motor.move_forward(100, 100)
+            motor.move_forward(75, 75)
 
         print("Decision:", decision)
         print("-" * 70)

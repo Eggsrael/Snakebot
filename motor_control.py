@@ -1,17 +1,12 @@
-import warnings
+i;port warnings
 import RPi.GPIO as GPIO
 from time import sleep
-
 GPIO.setwarnings(False)
-# number is in mhz
-# en_a = left
-# en_b = right
 
 class Motor:
-    # Pin definitions
 
-    def __init__(self, in1=13, in2=19, en_a=5, in3=26, in4=21, en_b=6, start_duty=75, frequency=1000):
-        # Assign instance pins (avoid accidental duplicates)
+    def __init__(self, in1=5, in2=6, en_a=24, in3=13, in4=19, en_b=24, start_duty=100, frequency=1000):
+
         self.in1 = in1  # Right motor input 1
         self.in2 = in2  # Right motor input 2
         self.en_a = en_a  # Right motor enable (PWM)
@@ -26,51 +21,52 @@ class Motor:
             GPIO.setup(pin, GPIO.OUT)
             GPIO.output(pin, GPIO.LOW)
 
-        # Initialize PWM
-        self.left_pwm = GPIO.PWM(self.en_a, frequency)
-        self.right_pwm = GPIO.PWM(self.en_b, frequency)
+        self.left_pwm = GPIO.PWM(self.en_a, 100)
+        self.right_pwm = GPIO.PWM(self.en_b, 100)
         self.left_pwm.start(start_duty)
         self.right_pwm.start(start_duty)
 
-    def _set_speeds(self, rfreq, lfreq):
-        self.left_pwm.ChangeFrequency(lfreq)
-        self.right_pwm.ChangeFrequency(rfreq)
+    def _set_speeds(self, rduty, lduty):
+        self.left_pwm.ChangeDutyCycle(lduty)
+        self.right_pwm.ChangeDutyCycle(rduty)
 
-    def move_forward(self, rfreq, lfreq):
-        self._set_speeds(rfreq, lfreq)
-        GPIO.output(self.in2, GPIO.HIGH)
+    def move_forward(self, rduty, lduty):
+        self._set_speeds(rduty, lduty)
         GPIO.output(self.in1, GPIO.LOW)
+        GPIO.output(self.in2, GPIO.HIGH)
         GPIO.output(self.in3, GPIO.HIGH)
         GPIO.output(self.in4, GPIO.LOW)
 
-        print("Forward")   
-    def move_backward(self, rfreq, lfreq):
-        self._set_speeds(rfreq, lfreq)
-        GPIO.output(self.in1, GPIO.LOW)
-        GPIO.output(self.in2, GPIO.HIGH)
-        GPIO.output(self.in4, GPIO.LOW)
-        GPIO.output(self.in3, GPIO.HIGH)
-        print("Backward")
-
-    def move_right(self, rfreq, lfreq):
-        self._set_speeds(rfreq, lfreq)
-        GPIO.output(self.in1, GPIO.LOW)
-        GPIO.output(self.in2, GPIO.HIGH)
-        GPIO.output(self.in4, GPIO.LOW)
-        GPIO.output(self.in3, GPIO.LOW)
-        print("Right")
-
-    def move_left(self, rfreq, lfreq):
-        self._set_speeds(rfreq, lfreq)
+        print("Forward")
+    def move_backward(self, rduty, lduty):
+        self._set_speeds(rduty, lduty)
         GPIO.output(self.in1, GPIO.HIGH)
         GPIO.output(self.in2, GPIO.LOW)
+        GPIO.output(self.in3, GPIO.LOW)
         GPIO.output(self.in4, GPIO.HIGH)
-        GPIO.output(self.in3, GPIO.HIGH)
+        print("Backward")
+
+    def move_right(self, rduty, lduty):
+        self._set_speeds(rduty, lduty)
+        GPIO.output(self.in1, GPIO.LOW)
+        GPIO.output(self.in2, GPIO.HIGH)
+        GPIO.output(self.in3, GPIO.LOW)
+        GPIO.output(self.in4, GPIO.LOW)
+        print("Right")
+
+    def move_left(self, rduty, lduty):
+        self._set_speeds(rduty, lduty)
+        GPIO.output(self.in1, GPIO.LOW)
+        GPIO.output(self.in2, GPIO.LOW)
+        GPIO.output(self.in3, GPIO.LOW)
+        GPIO.output(self.in4, GPIO.HIGH)
         print("Left")
 
     def stop(self):
-        self.left_pwm.stop()
-        self.right_pwm.stop()
+        GPIO.output(self.in1, GPIO.LOW)
+        GPIO.output(self.in2, GPIO.LOW)
+        GPIO.output(self.in4, GPIO.LOW)
+        GPIO.output(self.in3, GPIO.LOW)
         print("Stopped")
 
     def cleanup(self):
@@ -78,6 +74,3 @@ class Motor:
         self.left_pwm.stop()
         self.right_pwm.stop()
         GPIO.cleanup()
-
-
-
